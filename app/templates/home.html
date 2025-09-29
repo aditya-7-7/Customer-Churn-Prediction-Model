@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Churn Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <style>
+    body { padding-top: 20px; }
+    .form-card { box-shadow: 0 2px 6px rgba(0,0,0,0.08); padding: 18px; border-radius: 6px; }
+    .result-box { margin-top: 15px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="form-card">
+        <h4 class="mb-3">Customer Churn Input</h4>
+
+        <!-- Use relative action so it works when hosted -->
+        <form action="/" method="POST" class="form">
+
+          <!-- Row 1: numeric fields -->
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="query1">SeniorCitizen (0/1)</label>
+              <input type="number" min="0" max="1" step="1" class="form-control" id="query1" name="query1" value="{{ query1 or '' }}">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="query2">MonthlyCharges</label>
+              <input type="number" step="0.01" class="form-control" id="query2" name="query2" value="{{ query2 or '' }}">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="query3">TotalCharges</label>
+              <input type="number" step="0.01" class="form-control" id="query3" name="query3" value="{{ query3 or '' }}">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="query19">tenure (months)</label>
+              <input type="number" min="0" step="1" class="form-control" id="query19" name="query19" value="{{ query19 or '' }}">
+            </div>
+          </div>
+
+          <!-- Row 2: simple categorical selects (use values matching training data) -->
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="query4">Gender</label>
+              <select class="form-control" id="query4" name="query4">
+                <option value="{{ query4 or '' }}">{{ query4 or 'Select' }}</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query5">Partner</label>
+              <select class="form-control" id="query5" name="query5">
+                <option value="{{ query5 or '' }}">{{ query5 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query6">Dependents</label>
+              <select class="form-control" id="query6" name="query6">
+                <option value="{{ query6 or '' }}">{{ query6 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query7">PhoneService</label>
+              <select class="form-control" id="query7" name="query7">
+                <option value="{{ query7 or '' }}">{{ query7 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3: more categorical -->
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="query8">MultipleLines</label>
+              <select class="form-control" id="query8" name="query8">
+                <option value="{{ query8 or '' }}">{{ query8 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No phone service">No phone service</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query9">InternetService</label>
+              <select class="form-control" id="query9" name="query9">
+                <option value="{{ query9 or '' }}">{{ query9 or 'Select' }}</option>
+                <option value="DSL">DSL</option>
+                <option value="Fiber optic">Fiber optic</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query10">OnlineSecurity</label>
+              <select class="form-control" id="query10" name="query10">
+                <option value="{{ query10 or '' }}">{{ query10 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No internet service">No internet service</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query11">OnlineBackup</label>
+              <select class="form-control" id="query11" name="query11">
+                <option value="{{ query11 or '' }}">{{ query11 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No internet service">No internet service</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 4: rest of categorical fields -->
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="query12">DeviceProtection</label>
+              <select class="form-control" id="query12" name="query12">
+                <option value="{{ query12 or '' }}">{{ query12 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No internet service">No internet service</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query13">TechSupport</label>
+              <select class="form-control" id="query13" name="query13">
+                <option value="{{ query13 or '' }}">{{ query13 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No internet service">No internet service</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query14">StreamingTV</label>
+              <select class="form-control" id="query14" name="query14">
+                <option value="{{ query14 or '' }}">{{ query14 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No internet service">No internet service</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="query15">StreamingMovies</label>
+              <select class="form-control" id="query15" name="query15">
+                <option value="{{ query15 or '' }}">{{ query15 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="No internet service">No internet service</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 5 -->
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="query16">Contract</label>
+              <select class="form-control" id="query16" name="query16">
+                <option value="{{ query16 or '' }}">{{ query16 or 'Select' }}</option>
+                <option value="Month-to-month">Month-to-month</option>
+                <option value="One year">One year</option>
+                <option value="Two year">Two year</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="query17">PaperlessBilling</label>
+              <select class="form-control" id="query17" name="query17">
+                <option value="{{ query17 or '' }}">{{ query17 or 'Select' }}</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="query18">PaymentMethod</label>
+              <select class="form-control" id="query18" name="query18">
+                <option value="{{ query18 or '' }}">{{ query18 or 'Select' }}</option>
+                <option value="Electronic check">Electronic check</option>
+                <option value="Mailed check">Mailed check</option>
+                <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                <option value="Credit card (automatic)">Credit card (automatic)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row mt-3">
+            <div class="col">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="reset" class="btn btn-secondary ml-2">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results -->
+      <div class="result-box">
+        {% if output1 %}
+          <div class="alert alert-info" role="alert">
+            <strong>Prediction:</strong> {{ output1 }}
+          </div>
+          <div class="alert alert-secondary" role="alert">
+            <strong>{{ output2 }}</strong>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- Right column: quick help / quick-fill examples -->
+    <div class="col-md-3">
+      <div class="card form-card">
+        <h6>Quick examples</h6>
+        <p class="small">Try example values to test the model:</p>
+        <ul class="small">
+          <li>SeniorCitizen: 0 or 1</li>
+          <li>MonthlyCharges: 60.5</li>
+          <li>TotalCharges: 1200</li>
+          <li>tenure: 24</li>
+          <li>gender: Male</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
