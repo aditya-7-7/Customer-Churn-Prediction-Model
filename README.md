@@ -85,5 +85,7 @@ customer-churn-prediction/
 
 ## Screenshots
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a2825047-9204-4245-b457-4b451a5eca9c" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f608205c-7111-4943-bacb-826f8fc5fb84" />
+
+
 
